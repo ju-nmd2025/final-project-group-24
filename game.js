@@ -1,4 +1,4 @@
-import { Character } from "./char";
+import { Character } from "./character";
 import { Platform } from "./plataform";
 
 let gravity = 0.35;
