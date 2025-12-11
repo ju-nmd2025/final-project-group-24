@@ -85,6 +85,9 @@ function updatecharacter() {
       if (withinX && wasAbove && willCross) {
         character.vy = jumpForce;
         score += 10;
+        if (p.type === "breakable") {
+          p.broken = true;
+        }
       }
     }
   }
