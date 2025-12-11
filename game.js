@@ -173,9 +173,12 @@ function drawGameOver() {
   pop();
 }
 
-function keyPressed() {
-  // Restart on SPACE
-  if (gameOver && key === " ") {
-    resetGame();
+function mousePressed() {
+  if (gameOver) {
+    let boxTop = height / 2 - 60;
+    let boxBottom = height / 2 + 60;
+    if (mouseY > boxTop && mouseY < boxBottom) {
+      resetGame();
+    }
   }
 }
