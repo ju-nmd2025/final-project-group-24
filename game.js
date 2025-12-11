@@ -106,6 +106,9 @@ function updatecharacter() {
 }
 
 function updateCameraAndPlatforms() {
+  for (let p of platforms) {
+    p.update();
+  }
   // If player goes above mid-screen -> move world down
   if (character.y < height / 2) {
     let dy = height / 2 - character.y;
