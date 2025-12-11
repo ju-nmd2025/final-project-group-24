@@ -14,6 +14,7 @@ let platformH = 12;
 let score = 0;
 let highScore = 0;
 let gameOver = false;
+let startGame = false;
 
 function setup() {
   createCanvas(400, 600);
@@ -52,6 +53,11 @@ function createPlatform(x, y) {
 
 function draw() {
   background(155, 231, 255);
+
+  if (!startGame) {
+    drawstartgame();
+    return; // Stops draw() until the player starts the game
+  }
 
   if (!gameOver) {
     updatecharacter();
@@ -109,7 +115,7 @@ function updateCameraAndPlatforms() {
   for (let p of platforms) {
     p.update();
   }
-  // If player goes above mid-screen -> move world down
+  // If player goes above mid-screen = move world down
   if (character.y < height / 2) {
     let dy = height / 2 - character.y;
     character.y = height / 2;
@@ -176,12 +182,41 @@ function drawGameOver() {
   pop();
 }
 
+function drawstartgame() {
+  push();
+  fill(0, 0, 0, 150);
+  noStroke();
+  rect(0, height / 2 - 60, width, 120);
+
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(28);
+  text("Welcome to this lovely game", width / 2, height / 2 - 10);
+  textSize(16);
+  text("Click HERE to star the game", width / 2, height / 2 + 20);
+  pop();
+}
+
 function mousePressed() {
+  // If it is on Start Over → start the game
+  if (!startGame) {
+    let boxTop = height / 2 - 60;
+    let boxBottom = height / 2 + 60;
+    if (mouseY > boxTop && mouseY < boxBottom) {
+      startGame = true;
+    }
+
+    resetGame();
+    return;
+  }
+
+  //If it is on Game Over → reset the game
   if (gameOver) {
     let boxTop = height / 2 - 60;
     let boxBottom = height / 2 + 60;
     if (mouseY > boxTop && mouseY < boxBottom) {
       resetGame();
+      return;
     }
   }
 }
