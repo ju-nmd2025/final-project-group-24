@@ -45,8 +45,20 @@ function createPlatform(x, y) {
 
 function draw() {
   background(155, 231, 255);
+
+  if (!gameOver) {
+    updatecharacter();
+    updateCameraAndPlatforms();
+    checkGameOver();
+  }
+
   drawPlatforms();
   drawcharacter();
+  drawHUD();
+
+  if (gameOver) {
+    drawGameOver();
+  }
 }
 
 function updatecharacter() {
@@ -111,4 +123,40 @@ function drawcharacter() {
 
 function drawPlatforms() {
   for (let p of platforms) p.draw();
+}
+function drawHUD() {
+  push();
+  fill(0, 0, 0, 120);
+  noStroke();
+  rect(0, 0, width, 35);
+
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  text("Score: " + score, 10, 18);
+  textAlign(RIGHT, CENTER);
+  text("Best: " + highScore, width - 10, 18);
+  pop();
+}
+
+function drawGameOver() {
+  push();
+  fill(0, 0, 0, 150);
+  noStroke();
+  rect(0, height / 2 - 60, width, 120);
+
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(28);
+  text("Game Over", width / 2, height / 2 - 10);
+  textSize(16);
+  text("Press SPACE to restart", width / 2, height / 2 + 20);
+  pop();
+}
+
+function keyPressed() {
+  // Restart on SPACE
+  if (gameOver && key === " ") {
+    resetGame();
+  }
 }
