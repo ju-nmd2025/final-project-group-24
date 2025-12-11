@@ -1,42 +1,114 @@
-import { character } from "./character";
-import platform from "platform";
+import { Character } from "./character";
+import { Platform } from "./plataform";
+
+let gravity = 0.35;
+let jumpForce = -10.5;
+
+// Platforms parameters
+let platforms = [];
+let platformCount = 10;
+let platformW = 65;
+let platformH = 12;
 
 function setup() {
-    createCanvas(400, 400);
+  createCanvas(400, 600);
+  resetGame();
 }
 
-// Obstacle / Spike / Death
-function drawObstacle() {
-    push();
-    fill("red");
-    triangle(180, 300, 210, 240, 240, 300);
-    pop();
+function resetGame() {
+  score = 0;
+  gameOver = false;
+
+  // Reset player
+  character = new Character(
+    width / 2 - 40 / 2, // x
+    height - 100, // y
+    40, // w
+    40, // h
+    jumpForce, // vy
+    4 // speed
+  );
+
+  // Create platforms
+  platforms = [];
+  let step = height / platformCount;
+  for (let i = 0; i < platformCount; i++) {
+    let x = random(width - platformW);
+    let y = height - i * step - 40;
+    platforms.push(createPlatform(x, y));
+  }
 }
 
-let x = 100;
-let y = 100;
+function createPlatform(x, y) {
+  return new Platform(x, y, platformW, platformH);
+}
 
 function draw() {
-    background(100, 100, 100);
-
-    character.draw();
-	platform.draw();
-
-    platform.x -= 10;
-    if(platform.x + platform.w < 0){
-        platform.x = 500;
-    }
-
-    if(character.y + character.h < 300){
-        character.y += 10;
-    }
-
-    // Floor
-    line(0, 300, 400, 300);
+  background(155, 231, 255);
+  drawPlatforms();
+  drawcharacter();
 }
 
-function keyPressed(){
-    if(character.y + character.h === 300){
-        character.y -= 80;
+function updatecharacter() {
+  // Horizontal movement
+  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
+    // A
+    character.x -= character.speed;
+  }
+  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
+    // D
+    character.x += character.speed;
+  }
+
+  // Wrap around
+  if (character.x + character.w < 0) character.x = width;
+  if (character.x > width) character.x = -character.w;
+
+  // Gravity
+  character.vy += gravity;
+  character.y += character.vy;
+
+  // Collision with platforms (only when falling)
+  if (character.vy > 0) {
+    for (let p of platforms) {
+      let withinX = character.x + character.w > p.x && character.x < p.x + p.w;
+      let wasAbove = character.y + character.h <= p.y;
+      let willCross = character.y + character.h + character.vy >= p.y;
+
+      if (withinX && wasAbove && willCross) {
+        character.vy = jumpForce;
+        score += 10;
+      }
     }
+  }
+}
+
+function updateCameraAndPlatforms() {
+  // If player goes above mid-screen -> move world down
+  if (character.y < height / 2) {
+    let dy = height / 2 - character.y;
+    character.y = height / 2;
+
+    for (let p of platforms) {
+      p.y += dy;
+    }
+
+    // Remove platforms that go off screen at bottom, add new on top
+    for (let i = platforms.length - 1; i >= 0; i--) {
+      if (platforms[i].y > height + platformH) {
+        platforms.splice(i, 1);
+        let newX = random(width - platformW);
+        let newY = random(-80, -20);
+        platforms.push(createPlatform(newX, newY));
+      }
+    }
+  }
+}
+
+function drawcharacter() {
+  character.draw();
+}
+
+function drawPlatforms() {
+  for (let p of platforms) p.draw();
 }
