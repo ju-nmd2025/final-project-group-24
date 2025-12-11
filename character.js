@@ -1,204 +1,258 @@
-import { Character } from "./testCha.js";
-import { Platform } from "./testPlatform2.js";
+// Doraemon Character class
+export class Character {
+  constructor(x, y, w, h, vy = 0, speed = 4) {
+    // toạ độ RECT dùng cho game logic (va chạm, di chuyển)
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
 
-// ===== DOODLE JUMP IN P5.JS =====
-
-// Player
-let player;
-
-let gravity = 0.35;
-let jumpForce = -10.5;
-
-// Platforms
-let platforms = [];
-let platformCount = 10;
-let platformW = 65;
-let platformH = 12;
-
-// Game state
-let score = 0;
-let highScore = 0;
-let gameOver = false;
-
-function setup() {
-  createCanvas(400, 600);
-  textFont("system-ui");
-  resetGame();
-}
-
-function resetGame() {
-  score = 0;
-  gameOver = false;
-
-  // Reset player (dùng class Character)
-  player = new Character(
-    width / 2 - 40 / 2, // x
-    height - 100, // y
-    40, // w
-    40, // h
-    jumpForce, // vy
-    4 // speed
-  );
-
-  // Create platforms
-  platforms = [];
-  let step = height / platformCount;
-  for (let i = 0; i < platformCount; i++) {
-    let x = random(width - platformW);
-    let y = height - i * step - 40;
-    platforms.push(createPlatform(x, y));
-  }
-}
-
-function createPlatform(x, y) {
-  // 20% là platform vỡ, còn lại là thường
-  let r = random();
-  let type = r < 0.2 ? "breakable" : "normal";
-  return new Platform(x, y, platformW, platformH, type);
-}
-
-function draw() {
-  background(155, 231, 255);
-
-  if (!gameOver) {
-    updatePlayer();
-    updateCameraAndPlatforms();
-    checkGameOver();
+    // physics
+    this.vy = vy;
+    this.speed = speed;
   }
 
-  drawPlatforms();
-  drawPlayer();
-  drawHUD();
+  draw() {
+    // Tâm Doraemon = tâm hình chữ nhật của nhân vật
+    const x = this.x + this.w / 2;
+    const y = this.y + this.h / 2;
 
-  if (gameOver) {
-    drawGameOver();
+    // scale Doraemon theo chiều cao rect: h = 40 -> size = 200 (như code cũ)
+    const size = this.h * 1.5;
+
+    stroke(0);
+    strokeWeight(1);
+
+    // Head
+    push();
+    fill(0, 150, 255);
+    ellipse(x, y, size, size);
+    pop();
+
+    // white out
+    push();
+    beginShape();
+    vertex(x - size * 0.44, y + size * 0.056);
+    bezierVertex(
+      x - size * 0.46,
+      y + size * 0.098,
+      x - size * 0.45,
+      y + size * 0.28,
+      x - size * 0.27,
+      y + size * 0.42
+    );
+    vertex(x - size * 0.27, y + size * 0.42);
+    bezierVertex(
+      x - size * 0.09,
+      y + size * 0.55,
+      x + size * 0.19,
+      y + size * 0.5,
+      x + size * 0.27,
+      y + size * 0.42
+    );
+    vertex(x + size * 0.27, y + size * 0.42);
+    bezierVertex(
+      x + size * 0.29,
+      y + size * 0.41,
+      x + size * 0.5,
+      y + size * 0.22,
+      x + size * 0.44,
+      y + size * 0.056
+    );
+    endShape();
+    pop();
+
+    //face
+    // left
+    push();
+    fill(255);
+    beginShape();
+    vertex(x - size * 0.2, y - size * 0.3);
+    bezierVertex(
+      x - size * 0.25,
+      y - size * 0.3,
+      x - size * 0.38,
+      y - size * 0.28,
+      x - size * 0.4,
+      y - size * 0.12
+    );
+    vertex(x - size * 0.36, y - size * 0.1);
+    bezierVertex(
+      x - size * 0.5,
+      y - size * 0.2,
+      x - size * 0.55,
+      y + size * 0.05,
+      x - size * 0.38,
+      y + size * 0.08
+    );
+    vertex(x - size * 0.38, y + size * 0.08);
+    bezierVertex(
+      x - size * 0.2,
+      y + size * 0.09,
+      x - size * 0.23,
+      y + size * 0.05,
+      x,
+      y + size * 0.09
+    );
+    endShape();
+    pop();
+
+    // right
+    push();
+    beginShape();
+    vertex(x + size * 0.2, y - size * 0.3);
+    bezierVertex(
+      x + size * 0.25,
+      y - size * 0.3,
+      x + size * 0.38,
+      y - size * 0.28,
+      x + size * 0.4,
+      y - size * 0.12
+    );
+    vertex(x + size * 0.36, y - size * 0.1);
+    bezierVertex(
+      x + size * 0.5,
+      y - size * 0.2,
+      x + size * 0.55,
+      y + size * 0.05,
+      x + size * 0.38,
+      y + size * 0.08
+    );
+    vertex(x + size * 0.38, y + size * 0.08);
+    bezierVertex(
+      x + size * 0.2,
+      y + size * 0.09,
+      x + size * 0.23,
+      y + size * 0.05,
+      x,
+      y + size * 0.09
+    );
+    endShape();
+    pop();
+
+    //fill
+    push();
+    beginShape();
+    noStroke();
+    vertex(x + size * 0.2, y - size * 0.3);
+    vertex(x - size * 0.2, y - size * 0.3);
+    vertex(x, y + size * 0.09);
+    endShape(CLOSE);
+    pop();
+
+    // mouth
+    push();
+    fill(255, 0, 0);
+    strokeWeight(1);
+    beginShape();
+    vertex(x - size * 0.38, y + size * 0.08);
+    bezierVertex(
+      x - size * 0.3,
+      y + size * 0.09,
+      x - size * 0.23,
+      y + size * 0.05,
+      x - size * 0.002,
+      y + size * 0.04
+    );
+    vertex(x - size * 0.002, y + size * 0.04);
+    bezierVertex(
+      x + size * 0.3,
+      y + size * 0.09,
+      x + size * 0.23,
+      y + size * 0.05,
+      x + size * 0.38,
+      y + size * 0.08
+    );
+    vertex(x + size * 0.38, y + size * 0.08);
+    bezierVertex(
+      x + size * 0.3,
+      y + size * 0.24,
+      x - size * 0.02,
+      y + size * 0.7,
+      x - size * 0.38,
+      y + size * 0.08
+    );
+    endShape(CLOSE);
+    pop();
+
+    //tongue
+    push();
+    fill(128, 0, 0);
+    beginShape();
+    vertex(x - size * 0.2, y + size * 0.31);
+    bezierVertex(
+      x - size * 0.2,
+      y + size * 0.3,
+      x - size * 0.14,
+      y + size * 0.18,
+      x - size * 0.02,
+      y + size * 0.28
+    );
+    vertex(x - size * 0.02, y + size * 0.28);
+    bezierVertex(
+      x + size * 0.005,
+      y + size * 0.25,
+      x + size * 0.14,
+      y + size * 0.18,
+      x + size * 0.2,
+      y + size * 0.31
+    );
+    vertex(x + size * 0.2, y + size * 0.31);
+    bezierVertex(
+      x + size * 0.122,
+      y + size * 0.382,
+      x - size * 0.053,
+      y + size * 0.453,
+      x - size * 0.2,
+      y + size * 0.31
+    );
+    endShape(CLOSE);
+    pop();
+
+    // eyes
+    //left eye
+    push();
+    fill(255);
+    ellipse(x - size * 0.1, y - size * 0.3, size * 0.2, size * 0.25);
+    fill(0);
+    ellipse(x - size * 0.05, y - size * 0.3, size * 0.06, size * 0.1);
+    fill(255);
+    noStroke();
+    ellipse(x - size * 0.04, y - size * 0.3, size * 0.02, size * 0.03);
+    pop();
+
+    // right eye
+    push();
+    fill(255);
+    ellipse(x + size * 0.1, y - size * 0.3, size * 0.2, size * 0.25);
+    fill(0);
+    ellipse(x + size * 0.05, y - size * 0.3, size * 0.06, size * 0.1);
+    fill(255);
+    noStroke();
+    ellipse(x + size * 0.04, y - size * 0.3, size * 0.02, size * 0.03);
+    pop();
+
+    // nose
+    push();
+    fill(255, 0, 0);
+    ellipse(x, y - size * 0.15, size * 0.13, size * 0.13);
+    fill(255);
+    line(x, y - size * 0.08, x - size * 0.002, y + size * 0.04);
+    noStroke();
+    ellipse(x - size * 0.02, y - size * 0.15, size * 0.05, size * 0.05);
+    pop();
+
+    // whiskers
+    push();
+    strokeWeight(1);
+    // left
+    line(x - size * 0.13, y - size * 0.13, x - size * 0.36, y - size * 0.19);
+    line(x - size * 0.13, y - size * 0.078, x - size * 0.4, y - size * 0.083);
+    line(x - size * 0.13, y - size * 0.019, x - size * 0.42, y);
+    // right
+    line(x + size * 0.13, y - size * 0.13, x + size * 0.36, y - size * 0.19);
+    line(x + size * 0.13, y - size * 0.078, x + size * 0.4, y - size * 0.083);
+    line(x + size * 0.13, y - size * 0.019, x + size * 0.42, y);
+    pop();
   }
 }
-
-function updatePlayer() {
-  // Horizontal movement
-  if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) {
-    // A
-    player.x -= player.speed;
-  }
-  if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) {
-    // D
-    player.x += player.speed;
-  }
-
-  // Wrap around
-  if (player.x + player.w < 0) player.x = width;
-  if (player.x > width) player.x = -player.w;
-
-  // Gravity
-  player.vy += gravity;
-  player.y += player.vy;
-
-  // Collision with platforms (only when falling)
-  if (player.vy > 0) {
-    for (let p of platforms) {
-      // nếu đã vỡ rồi thì bỏ qua, không cho nhảy lại
-      if (p.broken) continue;
-
-      let withinX = player.x + player.w > p.x && player.x < p.x + p.w;
-      let wasAbove = player.y + player.h <= p.y;
-      let willCross = player.y + player.h + player.vy >= p.y;
-
-      if (withinX && wasAbove && willCross) {
-        player.vy = jumpForce;
-        score += 10;
-
-        // nếu đây là platform vỡ → cho nó gãy
-        if (p.type === "breakable") {
-          p.broken = true;
-        }
-      }
-    }
-  }
-}
-
-function updateCameraAndPlatforms() {
-  // update trạng thái platform (cái nào vỡ thì rơi)
-  for (let p of platforms) {
-    p.update();
-  }
-
-  // If player goes above mid-screen -> move world down
-  if (player.y < height / 2) {
-    let dy = height / 2 - player.y;
-    player.y = height / 2;
-
-    for (let p of platforms) {
-      p.y += dy;
-    }
-
-    // Remove platforms that go off screen at bottom, add new on top
-    for (let i = platforms.length - 1; i >= 0; i--) {
-      if (platforms[i].y > height + platformH) {
-        platforms.splice(i, 1);
-        let newX = random(width - platformW);
-        let newY = random(-80, -20);
-        platforms.push(createPlatform(newX, newY));
-      }
-    }
-  }
-}
-
-function checkGameOver() {
-  if (player.y > height + 50) {
-    gameOver = true;
-    if (score > highScore) {
-      highScore = score;
-    }
-  }
-}
-
-function drawPlayer() {
-  player.draw();
-}
-
-function drawPlatforms() {
-  for (let p of platforms) p.draw();
-}
-
-function drawHUD() {
-  push();
-  fill(0, 0, 0, 120);
-  noStroke();
-  rect(0, 0, width, 35);
-
-  fill(255);
-  textSize(16);
-  textAlign(LEFT, CENTER);
-  text("Score: " + score, 10, 18);
-  textAlign(RIGHT, CENTER);
-  text("Best: " + highScore, width - 10, 18);
-  pop();
-}
-
-function drawGameOver() {
-  push();
-  fill(0, 0, 0, 150);
-  noStroke();
-  rect(0, height / 2 - 60, width, 120);
-
-  fill(255);
-  textAlign(CENTER, CENTER);
-  textSize(28);
-  text("Game Over", width / 2, height / 2 - 10);
-  textSize(16);
-  text("Press SPACE to restart", width / 2, height / 2 + 20);
-  pop();
-}
-
-function keyPressed() {
-  // Restart on SPACE
-  if (gameOver && key === " ") {
-    resetGame();
-  }
-}
-
-// nếu bạn dùng <script type="module"> với p5, thêm dòng này:
-window.setup = setup;
-window.draw = draw;
-window.keyPressed = keyPressed;
