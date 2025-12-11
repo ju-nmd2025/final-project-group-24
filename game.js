@@ -112,6 +112,15 @@ function updateCameraAndPlatforms() {
   }
 }
 
+function checkGameOver() {
+  if (character.y > height + 50) {
+    gameOver = true;
+    if (score > highScore) {
+      highScore = score;
+    }
+  }
+}
+
 function drawcharacter() {
   character.draw();
 }
