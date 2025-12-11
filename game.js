@@ -44,12 +44,17 @@ function resetGame() {
     platforms.push(createPlatform(x, y));
   }
 }
-
+// 15% break, 35% moving
 function createPlatform(x, y) {
   let r = random();
-  let type = r < 0.2 ? "breakable" : "normal";
+  let type;
+
+  if (r < 0.15) type = "breakable";
+  else if (r < 0.35) type = "moving";
+  else type = "normal";
+
   return new Platform(x, y, platformW, platformH, type);
-} //20% is break platform
+}
 
 function draw() {
   background(155, 231, 255);
