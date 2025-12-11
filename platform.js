@@ -10,6 +10,9 @@ export class Platform {
 
     //animation break
     this.breakProgress = 0;
+    if (this.type === "moving") {
+      this.speedX = random(1.5, 3) * (random() < 0.5 ? -1 : 1);
+    }
   }
 
   update() {
@@ -17,6 +20,10 @@ export class Platform {
       this.breakProgress += 0.08;
       if (this.breakProgress > 1) this.breakProgress = 1;
       this.y += 5;
+      return;
+    }
+    if (this.x <= 0 || this.x + this.w >= width) {
+      this.speedX *= -1;
     }
   }
 
