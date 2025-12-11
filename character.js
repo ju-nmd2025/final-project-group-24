@@ -1,7 +1,7 @@
 // Doraemon Character class
 export class Character {
   constructor(x, y, w, h, vy = 0, speed = 4) {
-    // toạ độ RECT dùng cho game logic (va chạm, di chuyển)
+    // moving
     this.x = x;
     this.y = y;
     this.w = w;
@@ -13,11 +13,11 @@ export class Character {
   }
 
   draw() {
-    // Tâm Doraemon = tâm hình chữ nhật của nhân vật
+    // center Doraemon
     const x = this.x + this.w / 2;
     const y = this.y + this.h / 2;
 
-    // scale Doraemon theo chiều cao rect: h = 40 -> size = 200 (như code cũ)
+    // scale Doraemon
     const size = this.h * 1.5;
 
     stroke(0);
