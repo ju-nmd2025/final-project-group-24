@@ -183,7 +183,7 @@ function drawGameOver() {
   textSize(28);
   text("Game Over", width / 2, height / 2 - 10);
   textSize(16);
-  text("Press SPACE to restart", width / 2, height / 2 + 20);
+  text("Click HERE to restart", width / 2, height / 2 + 20);
   pop();
 }
 
