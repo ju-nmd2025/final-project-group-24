@@ -10,6 +10,11 @@ let platformCount = 10;
 let platformW = 65;
 let platformH = 12;
 
+// Game state
+let score = 0;
+let highScore = 0;
+let gameOver = false;
+
 function setup() {
   createCanvas(400, 600);
   resetGame();
@@ -40,8 +45,10 @@ function resetGame() {
 }
 
 function createPlatform(x, y) {
-  return new Platform(x, y, platformW, platformH);
-}
+  let r = random();
+  let type = r < 0.2 ? "breakable" : "normal";
+  return new Platform(x, y, platformW, platformH, type);
+} //20% is break platform
 
 function draw() {
   background(155, 231, 255);
@@ -113,6 +120,15 @@ function updateCameraAndPlatforms() {
         let newY = random(-80, -20);
         platforms.push(createPlatform(newX, newY));
       }
+    }
+  }
+}
+
+function checkGameOver() {
+  if (character.y > height + 50) {
+    gameOver = true;
+    if (score > highScore) {
+      highScore = score;
     }
   }
 }
