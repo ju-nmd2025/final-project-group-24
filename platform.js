@@ -22,10 +22,15 @@ export class Platform {
       this.y += 5;
       return;
     }
+    //moving
+     if (this.type === "moving") {
+      this.x += this.speedX;
+
     if (this.x <= 0 || this.x + this.w >= width) {
       this.speedX *= -1;
     }
   }
+}
 
   draw() {
     // draw platform
@@ -33,9 +38,12 @@ export class Platform {
       push();
       if (this.type === "breakable") {
         fill(160, 82, 45); // breakable platform
+      } else if (this.type === "moving") {
+        fill(70, 170, 255);
       } else {
         fill(46, 125, 50); // normal platform
       }
+
       noStroke();
       rect(this.x, this.y, this.w, this.h, 4);
       pop();
@@ -46,7 +54,6 @@ export class Platform {
     const t = this.breakProgress;
     const gap = 4 + t * 12;
     const angle = t * 0.4;
-
     const halfW = this.w / 2;
 
     // left
