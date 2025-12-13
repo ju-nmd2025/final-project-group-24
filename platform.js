@@ -23,25 +23,25 @@ export class Platform {
       return;
     }
     //moving
-     if (this.type === "moving") {
+    if (this.type === "moving") {
       this.x += this.speedX;
 
-    if (this.x <= 0 || this.x + this.w >= width) {
-      this.speedX *= -1;
+      if (this.x <= 0 || this.x + this.w >= width) {
+        this.speedX *= -1;
+      }
     }
   }
-}
 
   draw() {
     // draw platform
     if (!this.broken) {
       push();
       if (this.type === "breakable") {
-        fill(160, 82, 45); // breakable platform
+        fill(277, 185, 255); // breakable platform
       } else if (this.type === "moving") {
-        fill(70, 170, 255);
+        fill(277, 185, 255);
       } else {
-        fill(46, 125, 50); // normal platform
+        fill(277, 185, 255); // normal platform
       }
 
       noStroke();
