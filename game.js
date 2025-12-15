@@ -227,3 +227,20 @@ function mousePressed() {
 }
 
 window.setup = setup;
+window.draw = draw;
+window.drawGameOver = drawGameOver;
+window.drawHUD = drawHUD;
+window.drawPlatforms = drawPlatforms;
+window.drawcharacter = drawcharacter;
+window.drawstartgame = drawstartgame;
+window.resetGame = resetGame;
+window.createPlatform = createPlatform;
+window.updatecharacter = updatecharacter;
+window.updateCameraAndPlatforms = updateCameraAndPlatforms;
+window.checkGameOver = checkGameOver;
+window.addEventListener("click", function (event) {
+  mousePressed();
+});
+window.addEventListener("keydown", function (event) {
+  keyPressed();
+});
