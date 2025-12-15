@@ -75,5 +75,3 @@ export class Platform {
     pop();
   }
 }
-
-export { Platform };
