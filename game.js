@@ -1,5 +1,5 @@
-import { Character } from "./character";
-import { Platform } from "./plataform";
+import { Character } from "./character.js";
+import { Platform } from "./platform.js";
 
 let gravity = 0.35;
 let jumpForce = -10.5;
@@ -225,3 +225,5 @@ function mousePressed() {
     }
   }
 }
+
+window.setup = setup;
