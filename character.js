@@ -256,3 +256,4 @@ export class Character {
     pop();
   }
 }
+export { Character };
