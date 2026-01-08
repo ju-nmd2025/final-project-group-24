@@ -3,6 +3,7 @@ import { Platform } from "./platform.js";
 
 let gravity = 0.35;
 let jumpForce = -10.5;
+let character;
 
 // Platforms parameters
 let platforms = [];
@@ -32,7 +33,7 @@ function resetGame() {
     40, // w
     40, // h
     jumpForce, // vy
-    4 // speed
+    4, // speed
   );
 
   // Create platforms
